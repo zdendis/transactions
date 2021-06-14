@@ -14,7 +14,7 @@
 
     <appender name="RollingFile"
               class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOGS}/transactions.log</file>
+        <file>${LOGS}/Transactions.log</file>
         <encoder
                 class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
@@ -23,7 +23,7 @@
         <rollingPolicy
                 class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- rollover daily and when the file reaches 10 MegaBytes -->
-            <fileNamePattern>${LOGS}/archived/transactions-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <fileNamePattern>${LOGS}/archived/Transactions-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy
                     class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>10MB</maxFileSize>
@@ -37,8 +37,8 @@
         <appender-ref ref="Console" />
     </root>
 
-    <!-- LOG "cz.zdenekvlk.transactions*" at TRACE level -->
-    <logger name="cz.zdenekvlk.transactions" level="trace" additivity="false">
+    <!-- LOG "cz.zdenekvlk.Transactions*" at TRACE level -->
+    <logger name="cz.zdenekvlk.Transactions" level="trace" additivity="false">
 <!--        <appender-ref ref="RollingFile" />-->
         <appender-ref ref="Console" />
     </logger>

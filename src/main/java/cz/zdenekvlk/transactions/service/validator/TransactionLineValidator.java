@@ -11,27 +11,28 @@ public class TransactionLineValidator implements CsvFileLineValidator<Transactio
             throw new CsvFileParseException("Transaction name " + line.getName() + " is invalid");
         }
 
-        if(!isPartnerNameValid(line.getPartnerName())) {
-            throw new CsvFileParseException("Partner name " + line.getPartnerName() + " is invalid");
+        if(!isPartnerNameValid(line.getPartner().getName())) {
+            throw new CsvFileParseException("Partner name " + line.getPartner().getName() + " is invalid");
         }
+
+//        if(!isTransactionYearInRange(line.getDateTime().getYear())) {
+//            throw new CsvFileParseException("Year of transaction " + line.getDateTime().getYear() + " is invalid");
+//        }
     }
 
     private boolean isTransactionNameValid(String name) {
-//        TransactionCsvFile.MIN_TRANSACTION_NAME_CHARS
-//        TransactionCsvFile.MAX_TRANSACTION_NAME_CHARS
-        return true;
-
+        return (name != null &&
+                TransactionCsvFile.MIN_TRANSACTION_NAME_CHARS <= name.strip().length() &&
+                name.length() >= TransactionCsvFile.MAX_TRANSACTION_NAME_CHARS);
     }
 
     private boolean isPartnerNameValid(String partnerName) {
-//        TransactionCsvFile.MIN_PARTNER_NAME_CHARS
-//        TransactionCsvFile.MAX_PARTNER_NAME_CHARS
-        return true;
+        return (partnerName != null &&
+                TransactionCsvFile.MIN_PARTNER_NAME_CHARS <= partnerName.strip().length() &&
+                partnerName.length() >= TransactionCsvFile.MAX_PARTNER_NAME_CHARS);
     }
 
-    private boolean isTransactionYearInRange() {
-//        TransactionCsvFile.MIN_YEAR
-//        TransactionCsvFile.MAX_YEAR
-        return true;
+    private boolean isTransactionYearInRange(int year) {
+        return (TransactionCsvFile.MIN_YEAR <= year && year <= TransactionCsvFile.MAX_YEAR);
     }
 }
