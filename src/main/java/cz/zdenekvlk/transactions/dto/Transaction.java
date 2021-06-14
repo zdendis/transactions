@@ -21,6 +21,5 @@ public class Transaction implements CsvFileLine {
     @CsvDate(value = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime dateTime;
 
-    @CsvBindByPosition(position = 3)
-    private int partnerTransactionNumber;
+    private String transactionNumber;
 }

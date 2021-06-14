@@ -1,21 +1,17 @@
 package cz.zdenekvlk.transactions.dto.processor;
 
 import com.opencsv.processor.RowProcessor;
+import cz.zdenekvlk.transactions.dto.TransactionKey;
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Objects;
 
 @RequiredArgsConstructor
 public class PartnerTransactionCounterProcessor implements RowProcessor {
-    private final PartnerCounter partnerCounter;
-
-    public boolean allowLine(String[] line) {
-        String partnerName = line[1].split("/")[0].strip();
-        partnerCounter.add(partnerName);
-        line[line.length - 1] = String.valueOf(partnerCounter.get(partnerName));
-        return true;
-    }
+    private final TransactionLineCounter transactionLineCounter;
 
     @Override
     public String processColumnItem(String column) {
@@ -27,8 +23,11 @@ public class PartnerTransactionCounterProcessor implements RowProcessor {
     public void processRow(String[] strings) {
         Arrays.stream(strings).forEach(this::processColumnItem);
 
+        String transactionName = strings[0].strip();
         String partnerName = strings[1].split("/")[0].strip();
-        partnerCounter.add(partnerName);
-        strings[1] = strings[1] + "/" + partnerCounter.get(partnerName);
+        LocalDateTime transactionDateTime = LocalDateTime.parse(strings[2].strip(),
+                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
+        transactionLineCounter.addTransaction(partnerName, new TransactionKey(transactionName, transactionDateTime));
     }
 }

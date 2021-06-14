@@ -2,17 +2,20 @@ package cz.zdenekvlk.transactions.dto;
 
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.bean.CsvToBeanBuilder;
-import cz.zdenekvlk.transactions.dto.processor.PartnerCounter;
+import cz.zdenekvlk.transactions.dto.processor.LineCounter;
+import cz.zdenekvlk.transactions.dto.processor.TransactionLineCounter;
 import cz.zdenekvlk.transactions.dto.processor.PartnerTransactionCounterProcessor;
-import org.springframework.stereotype.Component;
+import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
-@Component
+@RequiredArgsConstructor
 public class TransactionCsvFile implements CsvFile<Transaction> {
+    private final TransactionLineCounter transactionLineCounter;
+
     public static int MIN_TRANSACTIONS = 1;
     public static int MAX_TRANSACTIONS = 100;
     public static int MIN_YEAR = 2000;
@@ -27,7 +30,7 @@ public class TransactionCsvFile implements CsvFile<Transaction> {
         return new CsvToBeanBuilder<Transaction>(
                 new CSVReaderBuilder(
                         Files.newBufferedReader(Paths.get(location)))
-                        .withRowProcessor(new PartnerTransactionCounterProcessor(new PartnerCounter()))
+                        .withRowProcessor(new PartnerTransactionCounterProcessor(transactionLineCounter))
                         .build())
                 .withType(type)
                 .withIgnoreLeadingWhiteSpace(true)
@@ -35,5 +38,10 @@ public class TransactionCsvFile implements CsvFile<Transaction> {
                 .withSeparator(csvSeparator)
                 .build()
                 .parse();
+    }
+
+    @Override
+    public LineCounter getLineCounter() {
+        return transactionLineCounter;
     }
 }

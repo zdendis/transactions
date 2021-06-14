@@ -13,7 +13,6 @@ public class TextToPartner<T, I> extends AbstractBeanField<T, I> {
         String[] split = s.split("\\/", 3);
         partner.setName(split[0].strip());
         partner.setPhoneNumber(split[1].strip());
-        partner.setOrder(Integer.parseInt(split[2].strip()));
 
         return partner;
     }

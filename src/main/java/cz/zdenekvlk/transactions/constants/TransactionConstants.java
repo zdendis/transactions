@@ -8,5 +8,5 @@ package cz.zdenekvlk.transactions.constants;
 
 public class TransactionConstants {
     public static char DEFAULT_CSV_SEPARATOR = ',';
-
+    public static char RESULT_SEPARATOR = '|';
 }

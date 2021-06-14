@@ -5,16 +5,13 @@ import cz.zdenekvlk.transactions.constants.TransactionConstants;
 import cz.zdenekvlk.transactions.dto.CsvFile;
 import cz.zdenekvlk.transactions.dto.Transaction;
 import cz.zdenekvlk.transactions.dto.TransactionCsvFile;
+import cz.zdenekvlk.transactions.dto.TransactionKey;
 import cz.zdenekvlk.transactions.exception.CsvFileParseException;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Service implements processing transactions from csv file
@@ -23,34 +20,58 @@ import java.util.Map;
  */
 
 @Slf4j
-@RequiredArgsConstructor
 @Service
 public class Solution implements SolutionInterface {
     private final CsvFile<Transaction> transactionCsvFile;
 
+    public Solution(CsvFile<Transaction> transactionCsvFile) {
+        this.transactionCsvFile = transactionCsvFile;
+    }
+
     @Override
     public String solution(String location) {
-        List<Transaction> Transactions = new ArrayList<>();
+        List<Transaction> transactions;
         try {
-            Transactions = getTransactions(location);
+            transactions = getTransactions(location);
             // Check number of transactions - can be as application properties
-            transactionsChecksum(Transactions.size());
-            //TODO check no transactions have the same date and time
-            //TODO process to set number properly
+            transactionsChecksum(transactions.size());
         } catch (CsvFileParseException | IOException | CsvException e) {
             log.error("Error " + e.getMessage() + " occurred while reading transaction csv file " + location);
             return "";
         }
 
-        log.info(Transactions.toString());
-
-        return "TODO result";
-
+        return createResultString(transactions);
     }
 
     private List<Transaction> getTransactions(String location) throws IOException, CsvException {
-        return transactionCsvFile.readCsvFileIntoBean(
+        List<Transaction> transactions = transactionCsvFile.readCsvFileIntoBean(
                 location, Transaction.class, TransactionConstants.DEFAULT_CSV_SEPARATOR);
+
+        transactions.forEach(
+                transaction -> {
+                    String partnerName = transaction.getPartner().getName();
+                    int partnerTransactionsCount = transactionCsvFile.getLineCounter().getTransactionCount(partnerName);
+                    int partnerTransactionNumber = transactionCsvFile.getLineCounter().getTransactions(partnerName).indexOf(
+                            new TransactionKey(transaction.getName(), transaction.getDateTime()));
+
+                    transaction.setTransactionNumber(createTransactionNumber(partnerTransactionNumber, partnerTransactionsCount));
+                }
+        );
+
+        return transactions;
+    }
+
+    private String createTransactionNumber(int number, int transactionCount) {
+        String trxNumber = String.valueOf(number);
+        if(transactionCount < 10) {
+            return trxNumber;
+        } else if((transactionCount < 100 && number < 10) || (transactionCount == 100 && number >= 10)) {
+            return "0" + trxNumber;
+        } else if(transactionCount == 100){
+            return "00" + trxNumber;
+        } else {
+            return trxNumber;
+        }
     }
 
     private void transactionsChecksum(int size) throws CsvFileParseException {
@@ -60,5 +81,22 @@ public class Solution implements SolutionInterface {
                     TransactionCsvFile.MIN_TRANSACTIONS + " and " + TransactionCsvFile.MAX_TRANSACTIONS);
             throw new CsvFileParseException("Invalid transaction file checksum");
         }
+    }
+
+    private String createResultString(List<Transaction> transactions) {
+        StringBuilder stringBuilder = new StringBuilder();
+        transactions.forEach(
+                transaction -> {
+                    stringBuilder.append(transaction.getPartner().getName());
+                    stringBuilder.append(TransactionConstants.RESULT_SEPARATOR);
+                    stringBuilder.append(transaction.getTransactionNumber());
+                    stringBuilder.append(TransactionConstants.RESULT_SEPARATOR);
+                    stringBuilder.append(transaction.getName());
+                    stringBuilder.append(System.lineSeparator());
+
+                }
+        );
+
+        return stringBuilder.toString();
     }
 }
