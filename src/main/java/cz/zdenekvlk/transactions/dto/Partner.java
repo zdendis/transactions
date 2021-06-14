@@ -10,4 +10,6 @@ public class Partner {
 
     @CsvBindByPosition(position = 2, capture = "\\/(.+)")
     private String phoneNumber;
+
+    private int order;
 }

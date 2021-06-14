@@ -18,10 +18,9 @@ public class Transaction implements CsvFileLine {
     private Partner partner;
 
     @CsvBindByPosition(position = 2, capture = "^[\\s]*(.*)$")
-    @CsvDate(value = "yyyy-MM-dd hh:mm:ss")
+    @CsvDate(value = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime dateTime;
-//    private String dateTime;
 
-    @CsvIgnore
-    private String orderNumber;
+    @CsvBindByPosition(position = 3)
+    private int partnerTransactionNumber;
 }

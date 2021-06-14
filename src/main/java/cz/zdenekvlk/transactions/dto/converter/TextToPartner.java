@@ -10,9 +10,10 @@ public class TextToPartner<T, I> extends AbstractBeanField<T, I> {
     @Override
     protected Partner convert(String s) {
         Partner partner = new Partner();
-        String[] split = s.split("\\/", 2);
+        String[] split = s.split("\\/", 3);
         partner.setName(split[0].strip());
         partner.setPhoneNumber(split[1].strip());
+        partner.setOrder(Integer.parseInt(split[2].strip()));
 
         return partner;
     }
