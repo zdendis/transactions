@@ -18,6 +18,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
+@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class TransactionCsvFile implements CsvFile<Transaction> {
     private final TransactionLineCounter transactionLineCounter;
 

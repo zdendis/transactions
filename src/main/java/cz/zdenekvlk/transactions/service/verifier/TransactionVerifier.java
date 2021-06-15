@@ -6,18 +6,23 @@ import cz.zdenekvlk.transactions.dto.Transaction;
 import cz.zdenekvlk.transactions.dto.TransactionCsvFile;
 
 public class TransactionVerifier implements BeanVerifier<Transaction> {
+    public static String YEAR_OF_TRANSACTION = "Year of transaction ";
+    public static String PARTNER_NAME = "Partner name ";
+    public static String TRANSACTION_NAME = "Transaction name ";
+
+
     @Override
     public boolean verifyBean(Transaction transaction) throws CsvConstraintViolationException {
         if(!isTransactionNameValid(transaction.getName())) {
-            throw new CsvConstraintViolationException(transaction, "Transaction name " + transaction.getName() + " is invalid");
+            throw new CsvConstraintViolationException(transaction, TRANSACTION_NAME + transaction.getName() + " is invalid");
         }
 
         if(!isPartnerNameValid(transaction.getPartner().getName())) {
-            throw new CsvConstraintViolationException(transaction, "Partner name " + transaction.getPartner().getName() + " is invalid");
+            throw new CsvConstraintViolationException(transaction, PARTNER_NAME + transaction.getPartner().getName() + " is invalid");
         }
 
         if(!isTransactionYearInRange(transaction.getDateTime().getYear())) {
-            throw new CsvConstraintViolationException(transaction, "Year of transaction " + transaction.getDateTime().getYear() + " is invalid");
+            throw new CsvConstraintViolationException(transaction, YEAR_OF_TRANSACTION + transaction.getDateTime().getYear() + " is invalid");
         }
 
         return true;

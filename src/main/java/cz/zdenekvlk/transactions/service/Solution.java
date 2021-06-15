@@ -22,6 +22,7 @@ import java.util.List;
 
 @Slf4j
 @Service
+@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class Solution implements SolutionInterface {
     private final CsvFile<Transaction> transactionCsvFile;
 
@@ -36,10 +37,11 @@ public class Solution implements SolutionInterface {
             transactions = getTransactions(location);
             // Check number of transactions - can be as application properties
             transactionsChecksum(transactions.size());
-        } catch (CsvFileParseException | IOException | CsvException e) {
+        } catch (CsvFileParseException | IOException | CsvException | RuntimeException e) {
+            String cause = e.getCause().toString();
             log.error("Error " + e.getMessage() + " occurred while reading transaction csv file " + location);
-            log.error("Cause: " + e.getCause());
-            return "";
+            log.error("Cause: " + cause);
+            return cause;
         }
 
         return createResultString(transactions);
