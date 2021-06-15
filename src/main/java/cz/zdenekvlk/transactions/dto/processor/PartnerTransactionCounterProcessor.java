@@ -21,7 +21,9 @@ public class PartnerTransactionCounterProcessor implements RowProcessor {
 
     @Override
     public void processRow(String[] strings) {
-        Arrays.stream(strings).forEach(this::processColumnItem);
+        for (int i = 0; i < strings.length; i++) {
+            strings[i] = processColumnItem(strings[i]);
+        }
 
         String transactionName = strings[0].strip();
         String partnerName = strings[1].split("/")[0].strip();
