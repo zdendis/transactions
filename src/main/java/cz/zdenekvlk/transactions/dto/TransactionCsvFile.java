@@ -5,6 +5,7 @@ import com.opencsv.bean.CsvToBeanBuilder;
 import cz.zdenekvlk.transactions.dto.processor.LineCounter;
 import cz.zdenekvlk.transactions.dto.processor.TransactionLineCounter;
 import cz.zdenekvlk.transactions.dto.processor.PartnerTransactionCounterProcessor;
+import cz.zdenekvlk.transactions.service.verifier.TransactionVerifier;
 import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
@@ -35,6 +36,7 @@ public class TransactionCsvFile implements CsvFile<Transaction> {
                 .withType(type)
                 .withIgnoreLeadingWhiteSpace(true)
                 .withOrderedResults(true)
+                .withVerifier(new TransactionVerifier())
                 .withSeparator(csvSeparator)
                 .build()
                 .parse();

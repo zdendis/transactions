@@ -1,11 +1,9 @@
 package cz.zdenekvlk.transactions.service;
 
+import com.opencsv.exceptions.CsvConstraintViolationException;
 import com.opencsv.exceptions.CsvException;
 import cz.zdenekvlk.transactions.constants.TransactionConstants;
-import cz.zdenekvlk.transactions.dto.CsvFile;
-import cz.zdenekvlk.transactions.dto.Transaction;
-import cz.zdenekvlk.transactions.dto.TransactionCsvFile;
-import cz.zdenekvlk.transactions.dto.TransactionKey;
+import cz.zdenekvlk.transactions.dto.*;
 import cz.zdenekvlk.transactions.exception.CsvFileParseException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -48,18 +46,7 @@ public class Solution implements SolutionInterface {
         List<Transaction> transactions = transactionCsvFile.readCsvFileIntoBean(
                 location, Transaction.class, TransactionConstants.DEFAULT_CSV_SEPARATOR);
 
-        transactions.forEach(
-                transaction -> {
-                    String partnerName = transaction.getPartner().getName();
-                    int partnerTransactionsCount = transactionCsvFile.getLineCounter().getTransactionCount(partnerName);
-                    List<TransactionKey> sortedByDateTransactions = transactionCsvFile.getLineCounter().getTransactions(partnerName);
-                    Collections.sort(sortedByDateTransactions);
-                    int partnerTransactionNumber = sortedByDateTransactions.indexOf(
-                            new TransactionKey(transaction.getName(), transaction.getDateTime())) + 1;
-
-                    transaction.setTransactionNumber(createTransactionNumber(partnerTransactionNumber, partnerTransactionsCount));
-                }
-        );
+        transactions.forEach(this::setTransactionNumber);
 
         return transactions;
     }
@@ -101,5 +88,17 @@ public class Solution implements SolutionInterface {
         );
 
         return stringBuilder.toString();
+    }
+
+    private void setTransactionNumber(Transaction transaction) {
+        String partnerName = transaction.getPartner().getName();
+        int partnerTransactionsCount = transactionCsvFile.getLineCounter().getTransactionCount(partnerName);
+        List<TransactionKey> sortedByDateTransactions = transactionCsvFile.getLineCounter().getTransactions(partnerName);
+        Collections.sort(sortedByDateTransactions);
+
+        int partnerTransactionNumber = sortedByDateTransactions.indexOf(
+                new TransactionKey(transaction.getName(), transaction.getDateTime())) + 1;
+
+        transaction.setTransactionNumber(createTransactionNumber(partnerTransactionNumber, partnerTransactionsCount));
     }
 }
