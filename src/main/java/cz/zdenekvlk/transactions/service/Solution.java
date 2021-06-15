@@ -38,10 +38,9 @@ public class Solution implements SolutionInterface {
             // Check number of transactions - can be as application properties
             transactionsChecksum(transactions.size());
         } catch (CsvFileParseException | IOException | CsvException | RuntimeException e) {
-            String cause = e.getCause().toString();
             log.error("Error " + e.getMessage() + " occurred while reading transaction csv file " + location);
-            log.error("Cause: " + cause);
-            return cause;
+            log.error("Cause: " + e.getCause());
+            return e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
         }
 
         return createResultString(transactions);
