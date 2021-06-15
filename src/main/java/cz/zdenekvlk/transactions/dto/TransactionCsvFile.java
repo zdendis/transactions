@@ -7,6 +7,8 @@ import cz.zdenekvlk.transactions.dto.processor.TransactionLineCounter;
 import cz.zdenekvlk.transactions.dto.processor.PartnerTransactionCounterProcessor;
 import cz.zdenekvlk.transactions.service.verifier.TransactionVerifier;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;

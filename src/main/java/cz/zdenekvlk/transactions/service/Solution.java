@@ -6,6 +6,8 @@ import cz.zdenekvlk.transactions.constants.TransactionConstants;
 import cz.zdenekvlk.transactions.dto.*;
 import cz.zdenekvlk.transactions.exception.CsvFileParseException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -48,6 +50,7 @@ public class Solution implements SolutionInterface {
                 location, Transaction.class, TransactionConstants.DEFAULT_CSV_SEPARATOR);
 
         transactions.forEach(this::setTransactionNumber);
+        transactionCsvFile.getLineCounter().reset();
 
         return transactions;
     }
@@ -101,5 +104,6 @@ public class Solution implements SolutionInterface {
                 new TransactionKey(transaction.getName(), transaction.getDateTime())) + 1;
 
         transaction.setTransactionNumber(createTransactionNumber(partnerTransactionNumber, partnerTransactionsCount));
+
     }
 }
