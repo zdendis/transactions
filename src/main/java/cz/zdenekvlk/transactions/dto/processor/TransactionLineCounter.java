@@ -1,9 +1,11 @@
 package cz.zdenekvlk.transactions.dto.processor;
 
 import cz.zdenekvlk.transactions.dto.TransactionKey;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 
+@Component("prototype")
 public class TransactionLineCounter implements LineCounter {
     private final Map<String, List<TransactionKey>> transactionLines;
 

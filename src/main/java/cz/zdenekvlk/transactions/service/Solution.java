@@ -36,6 +36,7 @@ public class Solution implements SolutionInterface {
             transactionsChecksum(transactions.size());
         } catch (CsvFileParseException | IOException | CsvException e) {
             log.error("Error " + e.getMessage() + " occurred while reading transaction csv file " + location);
+            log.error("Cause: " + e.getCause());
             return "";
         }
 

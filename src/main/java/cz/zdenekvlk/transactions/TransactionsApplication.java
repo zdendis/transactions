@@ -25,7 +25,7 @@ public class TransactionsApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 		Arrays.stream(args).forEach( file -> {
 			log.info("File name: " + file);
-			log.info(solution.solution(file));
+			log.info(System.lineSeparator() + solution.solution(file));
 		});
 	}
 }
