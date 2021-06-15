@@ -89,9 +89,7 @@ class SolutionTest {
         Path inconsistentTransactionFileLocation = tempDir.resolve("inconsistent.csv");
 
         Files.write(inconsistentTransactionFileLocation,
-                Arrays.asList("yearly subscription and montly yearly subscription and montly yearly subscription and " +
-                        "montly yearly subscription and montly yearly subscription and montly yearly subscription" +
-                        " and montly yearly subscription and montly, Netflix /602602602, 2016-01-02 10:55:32"));
+                Arrays.asList("yearly subscription, Netflix /602602602, " + (TransactionCsvFile.MIN_YEAR - 1) + "-01-02 10:55:32"));
 
         String result = solutionInterface.solution(inconsistentTransactionFileLocation.toString());
 
