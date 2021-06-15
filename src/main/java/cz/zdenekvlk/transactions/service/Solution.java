@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -51,8 +52,10 @@ public class Solution implements SolutionInterface {
                 transaction -> {
                     String partnerName = transaction.getPartner().getName();
                     int partnerTransactionsCount = transactionCsvFile.getLineCounter().getTransactionCount(partnerName);
-                    int partnerTransactionNumber = transactionCsvFile.getLineCounter().getTransactions(partnerName).indexOf(
-                            new TransactionKey(transaction.getName(), transaction.getDateTime()));
+                    List<TransactionKey> sortedByDateTransactions = transactionCsvFile.getLineCounter().getTransactions(partnerName);
+                    Collections.sort(sortedByDateTransactions);
+                    int partnerTransactionNumber = sortedByDateTransactions.indexOf(
+                            new TransactionKey(transaction.getName(), transaction.getDateTime())) + 1;
 
                     transaction.setTransactionNumber(createTransactionNumber(partnerTransactionNumber, partnerTransactionsCount));
                 }
